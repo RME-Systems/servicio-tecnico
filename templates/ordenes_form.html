@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ titulo }}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h2>{{ titulo }}</h2>
+        <hr>
+
+        <form method="POST" action="" novalidate>
+            {{ form.hidden_tag() }}
+
+            <div class="mb-4">
+                {{ form.equipo.label(class="form-label fw-bold") }}
+                {{ form.equipo(class="form-select", size=5) }} 
+                <div class="form-text">Seleccione el equipo que va a reparar.</div>
+            </div>
+
+            <div class="mb-4">
+                {{ form.problema.label(class="form-label fw-bold") }}
+                {{ form.problema(class="form-control", rows="4", placeholder="Ej: Pantalla rota, no enciende, hace ruido...") }}
+                {% for error in form.problema.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="d-grid gap-2">
+                {{ form.submit(class="btn btn-success btn-lg") }}
+                <a href="{{ url_for('ordenes.listar_ordenes') }}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Orden #{{ orden.id }}
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-dark text-white">
+                <h4>Orden de Trabajo #{{ orden.id }}</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Cliente:</strong> {{ orden.equipo.cliente.nombre }}<br>
+                        <strong>Teléfono:</strong> {{ orden.equipo.cliente.telefono }}
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <strong>Fecha Ingreso:</strong> {{ orden.fecha_ingreso.strftime('%d/%m/%Y') }}<br>
+                        <strong>Técnico:</strong> {{ orden.tecnico.nombre }}
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <h5>Equipo:</h5>
+                        <p class="fs-5">
+                            {{ orden.equipo.tipo_equipo.nombre }} 
+                            <strong>{{ orden.equipo.marca.nombre }} {{ orden.equipo.modelo }}</strong>
+                            (SN: {{ orden.equipo.serial }})
+                        </p>
+                    </div>
+                </div>
+
+                <div class="alert alert-secondary">
+                    <h5>Problema Reportado:</h5>
+                    <p class="mb-0">{{ orden.problema_reportado }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                Estado Actual
+            </div>
+            <div class="card-body text-center">
+                <h2 class="mb-3">{{ orden.estado.nombre }}</h2>
+
+                <form method="POST" action="">
+                    <label for="nuevo_estado" class="form-label">Cambiar Estado a:</label>
+                    <div class="input-group mb-3">
+                        <select name="nuevo_estado" class="form-select">
+                            {% for estado in estados %}
+                                <option value="{{ estado.id }}" {% if estado.id == orden.estado_id %}selected{% endif %}>
+                                    {{ estado.nombre }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button class="btn btn-outline-primary" type="submit">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="d-grid">
+            <a href="{{ url_for('ordenes.listar_ordenes') }}" class="btn btn-secondary">
+                Volver a la Lista
+            </a>
+        </div>
+    </div>
+</div>
+
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                Repuestos Utilizados y Costos
+            </div>
+            <div class="card-body">
+                
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Repuesto</th>
+                            <th>Cantidad</th>
+                            <th>Precio Unit.</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% set total_general = 0 %}
+                        
+                        {% for detalle in orden.detalles %}
+                        <tr>
+                            <td>{{ detalle.repuesto.nombre }}</td>
+                            <td>{{ detalle.cantidad }}</td>
+                            <td>{{ detalle.precio_unitario }} Bs.</td>
+                            <td>
+                                {% set subtotal = detalle.cantidad * detalle.precio_unitario %}
+                                {{ subtotal }} Bs.
+                            </td>
+                        </tr>
+                        {% set total_general = total_general + subtotal %}
+                        {% endfor %}
+                        
+                        {% if not orden.detalles.count() %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">No se han utilizado repuestos aún.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+
+                <hr>
+
+                <h5>Agregar Repuesto a la Orden:</h5>
+                <form action="{{ url_for('ordenes.agregar_repuesto', id=orden.id) }}" method="POST" class="row g-3 align-items-center">
+                    
+                    <div class="col-auto">
+                        <select name="repuesto_id" class="form-select" required>
+                            <option value="" selected disabled>Seleccionar Repuesto...</option>
+                            {% for r in repuestos %}
+                                <option value="{{ r.id }}">
+                                    {{ r.nombre }} (Stock: {{ r.stock }} - {{ r.precio }} Bs.)
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-auto">
+                        <input type="number" name="cantidad" class="form-control" placeholder="Cant." value="1" min="1" style="width: 80px;" required>
+                    </div>
+                    
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-success">Agregar</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

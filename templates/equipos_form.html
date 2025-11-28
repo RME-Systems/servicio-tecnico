@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ titulo }}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h2>{{ titulo }}</h2>
+        <hr>
+
+        <form method="POST" action="" novalidate>
+            
+            {{ form.hidden_tag() }}
+
+            <div class="mb-3">
+                {{ form.modelo.label(class="form-label") }}
+                {{ form.modelo(class="form-control") }}
+                {% for error in form.modelo.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                {{ form.serial.label(class="form-label") }}
+                {{ form.serial(class="form-control") }}
+                {% for error in form.serial.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                {{ form.cliente.label(class="form-label") }}
+                {{ form.cliente(class="form-select") }} {% for error in form.cliente.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                {{ form.marca.label(class="form-label") }}
+                {{ form.marca(class="form-select") }}
+                {% for error in form.marca.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                {{ form.tipo.label(class="form-label") }}
+                {{ form.tipo(class="form-select") }}
+                {% for error in form.tipo.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                {{ form.submit(class="btn btn-primary") }}
+                <a href="{{ url_for('equipos.listar_equipos') }}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

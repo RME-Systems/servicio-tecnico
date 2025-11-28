@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Panel Administrativo
+{% endblock %}
+
+{% block content %}
+<h2>Panel de Control (Dashboard)</h2>
+<p>Hola, <strong>{{ current_user.nombre }}</strong>. Desde aquí podrás gestionar el sistema.</p>
+<hr>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-header">Clientes Registrados</div>
+            <div class="card-body">
+                <h5 class="card-title">{{ n_clintes }}</h5>
+                <p class="card-text">Total de técnicos y admins.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-header">Órdenes Activas</div>
+            <div class="card-body">
+                <h5 class="card-title">{{ n_ordenes }}</h5>
+                <p class="card-text">Equipos actualmente en reparación.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-danger mb-3">
+            <div class="card-header">Repuestos Bajos</div>
+            <div class="card-body">
+                <h5 class="card-title">{{ n_bajos }}</h5>
+                <p class="card-text">Repuestos con poco stock.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3 class="mt-4">Gestión del Sistema</h3>
+<div class="d-grid gap-2 mb-4">
+    <a href="{{ url_for('ordenes.listar_ordenes') }}" class="btn btn-primary btn-lg">
+        ADMINISTRAR ÓRDENES DE TRABAJO
+    </a>
+</div>
+<div class="list-group">
+    <a href="{{ url_for('clientes.listar_clientes') }}" class="list-group-item list-group-item-action">Gestionar Clientes</a>
+    <a href="{{ url_for('equipos.listar_equipos') }}" class="list-group-item list-group-item-action">Gestionar Equipos</a>
+    <a href="{{ url_for('repuestos.listar_repuestos') }}" class="list-group-item list-group-item-action">Gestionar Repuestos (Inventario)</a>
+    <a href="{{ url_for('marcas.listar_marcas') }}" class="list-group-item list-group-item-action">Gestionar Marcas</a>
+    <a href="{{ url_for('tipos.listar_tipos') }}" class="list-group-item list-group-item-action">Gestionar Tipos de Equipo</a>
+    <a href="#" class="list-group-item list-group-item-action">
+        Gestionar Órdenes de Trabajo
+    </a>
+        {% if current_user.rol.nombre == 'Admin' %}
+    <a href="{{ url_for('usuarios.listar_usuarios') }}" class="list-group-item list-group-item-action list-group-item-danger">
+        <strong>⚠️ Gestionar Usuarios y Roles</strong>
+    </a>
+    {% endif %}
+</div>
+
+{% endblock %}
